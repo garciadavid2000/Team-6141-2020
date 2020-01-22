@@ -7,7 +7,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PWMVictorSPX;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.VictorSP;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -23,6 +28,20 @@ public class Robot extends TimedRobot {
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
+
+  private VictorSP leftMotor1 = new VictorSP(0);
+  private PWMVictorSPX leftMotor2 = new PWMVictorSPX(1);
+  private PWMVictorSPX leftMotor3 = new PWMVictorSPX(3);
+
+  private VictorSP rightMotor1 = new VictorSP(4);
+  private PWMVictorSPX rightMotor2 = new PWMVictorSPX(5);
+  private PWMVictorSPX rightMotor3 = new PWMVictorSPX(6);
+
+  private SpeedControllerGroup leftMotorGroup = new SpeedControllerGroup(leftMotor1, leftMotor2, leftMotor3);
+  private SpeedControllerGroup rightMotorGroup = new SpeedControllerGroup(rightMotor1, rightMotor2, rightMotor3);
+
+  private Joystick stick = new Joystick(0);
+  private XboxController xStick = new XboxController(1);
 
   /**
    * This function is run when the robot is first started up and should be
