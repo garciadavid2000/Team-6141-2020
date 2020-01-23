@@ -7,6 +7,10 @@
 
 package frc.robot;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PWMVictorSPX;
@@ -31,7 +35,7 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
-  private 
+  private CANSparkMax shooter = new CANSparkMax(1, MotorType.kBrushless);
 
   private VictorSP leftMotor1 = new VictorSP(0);
   private PWMVictorSPX leftMotor2 = new PWMVictorSPX(1);
@@ -50,6 +54,7 @@ public class Robot extends TimedRobot {
   private Joystick stick = new Joystick(0);
   private XboxController xStick = new XboxController(1);
 
+
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -59,6 +64,12 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
+
+
+    gearShift.set(DoubleSolenoid.Value.kForward);
+
+
+    shooter.restoreFactoryDefaults();
   }
 
   /**
@@ -112,6 +123,23 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+    
+    //drive
+    drive.arcadeDrive(stick.getY(), stick.getZ());
+
+
+    //shifing gears
+    if (stick.getRawButton(1)) {
+      gearShift.set(DoubleSolenoid.Value.kReverse);
+    } else if(stick.getRawButton(2)) {
+      gearShift.set(DoubleSolenoid.Value.kForward);
+    }
+
+    
+
+    
+
+
   }
 
   /**
