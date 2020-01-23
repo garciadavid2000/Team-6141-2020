@@ -7,12 +7,14 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PWMVictorSPX;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -29,6 +31,8 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
+  private 
+
   private VictorSP leftMotor1 = new VictorSP(0);
   private PWMVictorSPX leftMotor2 = new PWMVictorSPX(1);
   private PWMVictorSPX leftMotor3 = new PWMVictorSPX(3);
@@ -39,6 +43,9 @@ public class Robot extends TimedRobot {
 
   private SpeedControllerGroup leftMotorGroup = new SpeedControllerGroup(leftMotor1, leftMotor2, leftMotor3);
   private SpeedControllerGroup rightMotorGroup = new SpeedControllerGroup(rightMotor1, rightMotor2, rightMotor3);
+  private DifferentialDrive drive = new DifferentialDrive(leftMotorGroup, rightMotorGroup);
+
+  private DoubleSolenoid gearShift = new DoubleSolenoid(0, 1);
 
   private Joystick stick = new Joystick(0);
   private XboxController xStick = new XboxController(1);
