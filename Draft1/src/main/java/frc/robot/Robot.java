@@ -35,8 +35,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends TimedRobot {
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
-  private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  private String autoSelected;
+  private final SendableChooser<String> chooser = new SendableChooser<>();
 
   private CANSparkMax shooter = new CANSparkMax(1, MotorType.kBrushless);
 
@@ -50,7 +50,7 @@ public class Robot extends TimedRobot {
 
   private SpeedControllerGroup leftMotorGroup = new SpeedControllerGroup(leftMotor1, leftMotor2, leftMotor3);
   private SpeedControllerGroup rightMotorGroup = new SpeedControllerGroup(rightMotor1, rightMotor2, rightMotor3);
-  private DifferentialDrive drive = new DifferentialDrive(leftMotorGroup, rightMotorGroup);
+  private DifferentialDrive driveTrain = new DifferentialDrive(leftMotorGroup, rightMotorGroup);
 
   private DoubleSolenoid gearShift = new DoubleSolenoid(0, 1);
 
@@ -66,9 +66,9 @@ public class Robot extends TimedRobot {
   private double tx = limelight.getEntry("tx").getDouble(0);
   private double ty = limelight.getEntry("ty").getDouble(0);
 
-  private boolean m_LimelightHasValidTarget = false;
-  private double m_LimelightDriveCommand = 0.0;
-  private double m_LimelightSteerCommand = 0.0;
+  private boolean LimelightHasValidTarget = false;
+  private double LimelightDriveCommand = 0.0;
+  private double LimelightSteerCommand = 0.0;
 
   private double h1 = 0;
   private double h2 = 0;
@@ -82,9 +82,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
+    chooser.setDefaultOption("Default Auto", kDefaultAuto);
+    chooser.addOption("My Auto", kCustomAuto);
+    SmartDashboard.putData("Auto choices", chooser);
 
 
     gearShift.set(DoubleSolenoid.Value.kForward);
@@ -128,9 +128,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autoSelected = m_chooser.getSelected();
-    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
-    System.out.println("Auto selected: " + m_autoSelected);
+    autoSelected = chooser.getSelected();
+    // autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
+    System.out.println("Auto selected: " + autoSelected);
   }
 
   /**
@@ -138,7 +138,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    switch (m_autoSelected) {
+    switch (autoSelected) {
       case kCustomAuto:
         // Put custom auto code here
         break;
@@ -156,7 +156,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     
     //drive
-    drive.arcadeDrive(stick.getY(), stick.getZ());
+    driveTrain.arcadeDrive(stick.getY(), stick.getZ());
 
 
     //shifing gears
@@ -172,8 +172,8 @@ public class Robot extends TimedRobot {
       camMode.setNumber(0);
       ledMode.setNumber(3);
 
-      if (tv == 1){
-
+      if (LimelightHasValidTarget){
+        driveTrain.arcadeDrive(LimelightDriveCommand, LimelightSteerCommand);
       }
 
     } else {
@@ -198,22 +198,21 @@ public class Robot extends TimedRobot {
     // These numbers must be tuned for your Robot!  Be careful!
     final double STEER_K = 0.03;                    // how hard to turn toward the target
     final double DRIVE_K = 0.26;                    // how hard to drive fwd toward the target
-    final double DESIRED_TARGET_AREA = 13.0;        // Area of the target when the robot reaches the wall
     final double MAX_DRIVE = 0.7;                   // Simple speed limit so we don't drive too fast
 
     if (tv < 1.0)
     {
-      m_LimelightHasValidTarget = false;
-      m_LimelightDriveCommand = 0.0;
-      m_LimelightSteerCommand = 0.0;
+      LimelightHasValidTarget = false;
+      LimelightDriveCommand = 0.0;
+      LimelightSteerCommand = 0.0;
       return;
     }
 
-    m_LimelightHasValidTarget = true;
+    LimelightHasValidTarget = true;
 
     // Start with proportional steering
     double steer_cmd = tx * STEER_K;
-    m_LimelightSteerCommand = steer_cmd;
+    LimelightSteerCommand = steer_cmd;
 
     // try to drive forward until the target area reaches our desired area
     double drive_cmd = (distance - desiredDistance) * DRIVE_K;
@@ -223,7 +222,7 @@ public class Robot extends TimedRobot {
     {
       drive_cmd = MAX_DRIVE;
     }
-    m_LimelightDriveCommand = drive_cmd;
+    LimelightDriveCommand = drive_cmd;
   }
 
   public void estimateDistance() {
