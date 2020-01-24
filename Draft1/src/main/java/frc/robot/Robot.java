@@ -12,6 +12,7 @@ import com.revrobotics.SparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
@@ -57,6 +58,9 @@ public class Robot extends TimedRobot {
   private XboxController xStick = new XboxController(1);
 
   private NetworkTable limelight = NetworkTableInstance.getDefault().getTable("limelight");
+
+  private NetworkTableEntry ledMode = limelight.getEntry("ledMode");
+  private NetworkTableEntry camMode = limelight.getEntry("camMode");
 
   private double tv = limelight.getEntry("ta").getDouble(0);
   private double tx = limelight.getEntry("tx").getDouble(0);
@@ -159,7 +163,9 @@ public class Robot extends TimedRobot {
 
     //limelight
 
+    if (xStick.getAButton()) {
 
+    }
 
 
     
