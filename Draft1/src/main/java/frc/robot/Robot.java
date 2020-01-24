@@ -66,10 +66,15 @@ public class Robot extends TimedRobot {
   private double tx = limelight.getEntry("tx").getDouble(0);
   private double ty = limelight.getEntry("ty").getDouble(0);
 
+  private boolean m_LimelightHasValidTarget = false;
+  private double m_LimelightDriveCommand = 0.0;
+  private double m_LimelightSteerCommand = 0.0;
+
   private double h1 = 0;
   private double h2 = 0;
   private double a1 = 0;
-  private double d;
+  private double distance;
+  private double desiredDistance = 0;
 
   /**
    * This function is run when the robot is first started up and should be
@@ -105,7 +110,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("tv", tv);
     SmartDashboard.putNumber("tx", tx);
     SmartDashboard.putNumber("ty", ty);
-    SmartDashboard.putNumber("d", d);
+    SmartDashboard.putNumber("d", distance);
 
 
   }
@@ -164,7 +169,16 @@ public class Robot extends TimedRobot {
     //limelight
 
     if (xStick.getAButton()) {
+      camMode.setNumber(0);
+      ledMode.setNumber(3);
 
+      if (tv == 1){
+
+      }
+
+    } else {
+      camMode.setNumber(1);
+      ledMode.setNumber(1);
     }
 
 
@@ -180,11 +194,41 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {
   }
 
+  public void updateLimelightTracking(){
+    // These numbers must be tuned for your Robot!  Be careful!
+    final double STEER_K = 0.03;                    // how hard to turn toward the target
+    final double DRIVE_K = 0.26;                    // how hard to drive fwd toward the target
+    final double DESIRED_TARGET_AREA = 13.0;        // Area of the target when the robot reaches the wall
+    final double MAX_DRIVE = 0.7;                   // Simple speed limit so we don't drive too fast
 
+    if (tv < 1.0)
+    {
+      m_LimelightHasValidTarget = false;
+      m_LimelightDriveCommand = 0.0;
+      m_LimelightSteerCommand = 0.0;
+      return;
+    }
+
+    m_LimelightHasValidTarget = true;
+
+    // Start with proportional steering
+    double steer_cmd = tx * STEER_K;
+    m_LimelightSteerCommand = steer_cmd;
+
+    // try to drive forward until the target area reaches our desired area
+    double drive_cmd = (distance - desiredDistance) * DRIVE_K;
+
+    // don't let the robot drive too fast into the goal
+    if (drive_cmd > MAX_DRIVE)
+    {
+      drive_cmd = MAX_DRIVE;
+    }
+    m_LimelightDriveCommand = drive_cmd;
+  }
 
   public void estimateDistance() {
 
-    d = (h2 - h1) / Math.tan(a1 + ty);
+    distance = (h2 - h1) / Math.tan(a1 + ty);
 
   }
 }
