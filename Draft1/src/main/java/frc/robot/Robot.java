@@ -11,6 +11,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PWMVictorSPX;
@@ -39,11 +41,11 @@ public class Robot extends TimedRobot {
 
   private VictorSP leftMotor1 = new VictorSP(0);
   private PWMVictorSPX leftMotor2 = new PWMVictorSPX(1);
-  private PWMVictorSPX leftMotor3 = new PWMVictorSPX(3);
+  private PWMVictorSPX leftMotor3 = new PWMVictorSPX(2);
 
-  private VictorSP rightMotor1 = new VictorSP(4);
-  private PWMVictorSPX rightMotor2 = new PWMVictorSPX(5);
-  private PWMVictorSPX rightMotor3 = new PWMVictorSPX(6);
+  private VictorSP rightMotor1 = new VictorSP(3);
+  private PWMVictorSPX rightMotor2 = new PWMVictorSPX(4);
+  private PWMVictorSPX rightMotor3 = new PWMVictorSPX(5);
 
   private SpeedControllerGroup leftMotorGroup = new SpeedControllerGroup(leftMotor1, leftMotor2, leftMotor3);
   private SpeedControllerGroup rightMotorGroup = new SpeedControllerGroup(rightMotor1, rightMotor2, rightMotor3);
@@ -54,6 +56,16 @@ public class Robot extends TimedRobot {
   private Joystick stick = new Joystick(0);
   private XboxController xStick = new XboxController(1);
 
+  private NetworkTable limelight = NetworkTableInstance.getDefault().getTable("limelight");
+
+  private double tv = limelight.getEntry("ta").getDouble(0);
+  private double tx = limelight.getEntry("tx").getDouble(0);
+  private double ty = limelight.getEntry("ty").getDouble(0);
+
+  private double h1 = 0;
+  private double h2 = 0;
+  private double a1 = 0;
+  private double d;
 
   /**
    * This function is run when the robot is first started up and should be
@@ -68,6 +80,7 @@ public class Robot extends TimedRobot {
 
     gearShift.set(DoubleSolenoid.Value.kForward);
 
+    
 
     shooter.restoreFactoryDefaults();
   }
@@ -82,6 +95,15 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    
+    estimateDistance();
+
+    SmartDashboard.putNumber("tv", tv);
+    SmartDashboard.putNumber("tx", tx);
+    SmartDashboard.putNumber("ty", ty);
+    SmartDashboard.putNumber("d", d);
+
+
   }
 
   /**
@@ -135,7 +157,10 @@ public class Robot extends TimedRobot {
       gearShift.set(DoubleSolenoid.Value.kForward);
     }
 
-    
+    //limelight
+
+
+
 
     
 
@@ -147,5 +172,13 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+  }
+
+
+
+  public void estimateDistance() {
+
+    d = (h2 - h1) / Math.tan(a1 + ty);
+
   }
 }
