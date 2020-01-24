@@ -8,7 +8,6 @@
 package frc.robot;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.networktables.NetworkTable;
@@ -155,8 +154,26 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     
-    //drive
-    driveTrain.arcadeDrive(stick.getY(), stick.getZ());
+    //limelight
+
+    updateLimelightTracking();
+
+    if (xStick.getAButton()) {
+      camMode.setNumber(0);
+      ledMode.setNumber(3);
+
+      if (LimelightHasValidTarget){
+        driveTrain.arcadeDrive(LimelightDriveCommand, LimelightSteerCommand);
+      } else {
+        driveTrain.arcadeDrive(0, 0);
+      }
+
+    } else {
+      camMode.setNumber(1);
+      ledMode.setNumber(1);
+      //drive
+      driveTrain.arcadeDrive(stick.getY(), stick.getZ());
+    }
 
 
     //shifing gears
@@ -165,24 +182,6 @@ public class Robot extends TimedRobot {
     } else if(stick.getRawButton(2)) {
       gearShift.set(DoubleSolenoid.Value.kForward);
     }
-
-    //limelight
-
-    if (xStick.getAButton()) {
-      camMode.setNumber(0);
-      ledMode.setNumber(3);
-
-      if (LimelightHasValidTarget){
-        driveTrain.arcadeDrive(LimelightDriveCommand, LimelightSteerCommand);
-      }
-
-    } else {
-      camMode.setNumber(1);
-      ledMode.setNumber(1);
-    }
-
-
-    
 
 
   }
