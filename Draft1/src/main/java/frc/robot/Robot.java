@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -161,6 +162,8 @@ public class Robot extends TimedRobot {
     if (xStick.getAButton()) {
       camMode.setNumber(0);
       ledMode.setNumber(3);
+      xStick.setRumble(RumbleType.kLeftRumble, 0.3);
+      xStick.setRumble(RumbleType.kLeftRumble, 0.3);
 
       if (LimelightHasValidTarget){
         driveTrain.arcadeDrive(LimelightDriveCommand, LimelightSteerCommand);
@@ -169,10 +172,14 @@ public class Robot extends TimedRobot {
       }
 
     } else {
-      camMode.setNumber(1);
-      ledMode.setNumber(1);
       //drive
       driveTrain.arcadeDrive(stick.getY(), stick.getZ());
+      
+      xStick.setRumble(RumbleType.kLeftRumble, 0.3);
+      xStick.setRumble(RumbleType.kLeftRumble, 0.3);
+      
+      camMode.setNumber(1);
+      ledMode.setNumber(1);
     }
 
 
