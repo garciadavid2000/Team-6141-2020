@@ -16,6 +16,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PWMVictorSPX;
+import edu.wpi.first.wpilibj.SlewRateLimiter;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.VictorSP;
@@ -55,6 +56,9 @@ public class Robot extends TimedRobot {
   private DoubleSolenoid gearShift = new DoubleSolenoid(0, 1);
 
   private Joystick stick = new Joystick(0);
+  private SlewRateLimiter stickFilterY = new SlewRateLimiter(0.5);
+  private SlewRateLimiter stickFilterZ = new SlewRateLimiter(0.5);
+
   private XboxController xStick = new XboxController(1);
 
   private NetworkTable limelight = NetworkTableInstance.getDefault().getTable("limelight");
@@ -70,8 +74,8 @@ public class Robot extends TimedRobot {
   private double LimelightDriveCommand = 0.0;
   private double LimelightSteerCommand = 0.0;
 
-  private double h1 = 0;
-  private double h2 = 0;
+  private double h1 = 37;
+  private double h2 = 35;
   private double a1 = 0;
   private double distance;
   private double desiredDistance = 0;
@@ -173,7 +177,7 @@ public class Robot extends TimedRobot {
 
     } else {
       //drive
-      driveTrain.arcadeDrive(stick.getY(), stick.getZ());
+      driveTrain.arcadeDrive(stickFilterY.calculate(stick.getY()), stickFilterZ.calculate(stick.getZ()));
       
       xStick.setRumble(RumbleType.kLeftRumble, 0.3);
       xStick.setRumble(RumbleType.kLeftRumble, 0.3);
