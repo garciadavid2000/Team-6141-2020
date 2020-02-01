@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import com.analog.adis16448.frc.ADIS16448_IMU;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -39,7 +40,10 @@ public class Robot extends TimedRobot {
   private String autoSelected;
   private final SendableChooser<String> chooser = new SendableChooser<>();
 
-  private CANSparkMax shooter = new CANSparkMax(1, MotorType.kBrushless);
+  public static final ADIS16448_IMU imu = new ADIS16448_IMU();
+  
+  private CANSparkMax shooter1 = new CANSparkMax(1, MotorType.kBrushless);
+  private CANSparkMax shooter2 = new CANSparkMax(2, MotorType.kBrushless);
 
   private VictorSP leftMotor1 = new VictorSP(0);
   private PWMVictorSPX leftMotor2 = new PWMVictorSPX(1);
@@ -56,8 +60,8 @@ public class Robot extends TimedRobot {
   private DoubleSolenoid gearShift = new DoubleSolenoid(0, 1);
 
   private Joystick stick = new Joystick(0);
-  private SlewRateLimiter stickFilterY = new SlewRateLimiter(0.5);
-  private SlewRateLimiter stickFilterZ = new SlewRateLimiter(0.5);
+  private SlewRateLimiter stickFilterY = new SlewRateLimiter(1);
+  private SlewRateLimiter stickFilterZ = new SlewRateLimiter(1);
 
   private XboxController xStick = new XboxController(1);
 
@@ -91,7 +95,8 @@ public class Robot extends TimedRobot {
 
     
 
-    shooter.restoreFactoryDefaults();
+    shooter1.restoreFactoryDefaults();
+    shooter2.restoreFactoryDefaults();
   }
 
   /**
@@ -181,9 +186,9 @@ public class Robot extends TimedRobot {
 
 
     //shifing gears
-    if (stick.getRawButton(1)) {
+    if (stick.getRawButton(3)) {
       gearShift.set(DoubleSolenoid.Value.kReverse);
-    } else if(stick.getRawButton(2)) {
+    } else if(stick.getRawButton(4)) {
       gearShift.set(DoubleSolenoid.Value.kForward);
     }
 
