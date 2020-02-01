@@ -66,17 +66,13 @@ public class Robot extends TimedRobot {
   private NetworkTableEntry ledMode = limelight.getEntry("ledMode");
   private NetworkTableEntry camMode = limelight.getEntry("camMode");
 
-  private double tv = limelight.getEntry("ta").getDouble(0);
-  private double tx = limelight.getEntry("tx").getDouble(0);
-  private double ty = limelight.getEntry("ty").getDouble(0);
-
   private boolean LimelightHasValidTarget = false;
   private double LimelightDriveCommand = 0.0;
   private double LimelightSteerCommand = 0.0;
 
-  private double h1 = 37;
-  private double h2 = 35;
-  private double a1 = 0;
+  final private double h1 = 82.5;
+  final private double h2 = 115;
+  final private double a1 = 5;
   private double distance;
   private double desiredDistance = 0;
 
@@ -109,12 +105,9 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     
-    estimateDistance();
-
-    SmartDashboard.putNumber("tv", tv);
-    SmartDashboard.putNumber("tx", tx);
-    SmartDashboard.putNumber("ty", ty);
-    SmartDashboard.putNumber("d", distance);
+    
+    
+    
 
 
   }
@@ -179,8 +172,8 @@ public class Robot extends TimedRobot {
       //drive
       driveTrain.arcadeDrive(stickFilterY.calculate(stick.getY()), stickFilterZ.calculate(stick.getZ()));
       
-      xStick.setRumble(RumbleType.kLeftRumble, 0.3);
-      xStick.setRumble(RumbleType.kLeftRumble, 0.3);
+      xStick.setRumble(RumbleType.kLeftRumble, 0);
+      xStick.setRumble(RumbleType.kLeftRumble, 0);
       
       camMode.setNumber(1);
       ledMode.setNumber(1);
@@ -210,6 +203,17 @@ public class Robot extends TimedRobot {
     final double DRIVE_K = 0.26;                    // how hard to drive fwd toward the target
     final double MAX_DRIVE = 0.7;                   // Simple speed limit so we don't drive too fast
 
+    double tv = limelight.getEntry("tv").getDouble(0);
+    double tx = limelight.getEntry("tx").getDouble(0);
+    double ty = limelight.getEntry("ty").getDouble(0);
+
+    estimateDistance();
+
+    SmartDashboard.putNumber("tv", tv);
+    SmartDashboard.putNumber("tx", tx);
+    SmartDashboard.putNumber("ty", ty);
+    SmartDashboard.putNumber("d", distance);
+
     if (tv < 1.0)
     {
       LimelightHasValidTarget = false;
@@ -237,7 +241,9 @@ public class Robot extends TimedRobot {
 
   public void estimateDistance() {
 
-    distance = (h2 - h1) / Math.tan(a1 + ty);
+    double ty = limelight.getEntry("ty").getDouble(0);
+
+    distance = (h2 - h1) / (Math.tan(Math.toRadians(a1 + ty)));
 
   }
 }
