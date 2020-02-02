@@ -14,14 +14,17 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PWMVictorSPX;
 import edu.wpi.first.wpilibj.SlewRateLimiter;
+import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -39,11 +42,15 @@ public class Robot extends TimedRobot {
   private static final String kCustomAuto = "My Auto";
   private String autoSelected;
   private final SendableChooser<String> chooser = new SendableChooser<>();
-
-  public static final ADIS16448_IMU imu = new ADIS16448_IMU();
   
+  //motors
+
+    //shooter
   private CANSparkMax shooter1 = new CANSparkMax(1, MotorType.kBrushless);
   private CANSparkMax shooter2 = new CANSparkMax(2, MotorType.kBrushless);
+
+    //intake
+  private Spark intake = new Spark(6);
 
   private VictorSP leftMotor1 = new VictorSP(0);
   private PWMVictorSPX leftMotor2 = new PWMVictorSPX(1);
@@ -57,13 +64,7 @@ public class Robot extends TimedRobot {
   private SpeedControllerGroup rightMotorGroup = new SpeedControllerGroup(rightMotor1, rightMotor2, rightMotor3);
   private DifferentialDrive driveTrain = new DifferentialDrive(leftMotorGroup, rightMotorGroup);
 
-  private DoubleSolenoid gearShift = new DoubleSolenoid(0, 1);
-
-  private Joystick stick = new Joystick(0);
-  private SlewRateLimiter stickFilterY = new SlewRateLimiter(1);
-  private SlewRateLimiter stickFilterZ = new SlewRateLimiter(1);
-
-  private XboxController xStick = new XboxController(1);
+  //limelight
 
   private NetworkTable limelight = NetworkTableInstance.getDefault().getTable("limelight");
 
@@ -74,11 +75,31 @@ public class Robot extends TimedRobot {
   private double LimelightDriveCommand = 0.0;
   private double LimelightSteerCommand = 0.0;
 
-  final private double h1 = 82.5;
-  final private double h2 = 115;
-  final private double a1 = 5;
+  //limelight distance tracking
+
+  private final double h1 = 82.5;
+  private final double h2 = 115;
+  private final double a1 = 5;
   private double distance;
-  private double desiredDistance = 0;
+  private final double desiredDistance = 200;
+
+  //sensors
+
+  public static final ADIS16448_IMU imu = new ADIS16448_IMU();
+
+  //pneumatics
+
+  private Compressor compressor = new Compressor();
+  
+  private DoubleSolenoid gearShift = new DoubleSolenoid(0, 1);
+
+  // operator input
+
+  private Joystick stick = new Joystick(0);
+  private SlewRateLimiter stickFilterY = new SlewRateLimiter(1);
+  private SlewRateLimiter stickFilterZ = new SlewRateLimiter(1);
+
+  private XboxController xStick = new XboxController(1);
 
   /**
    * This function is run when the robot is first started up and should be
@@ -91,9 +112,9 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Auto choices", chooser);
 
 
-    gearShift.set(DoubleSolenoid.Value.kForward);
+    compressor.start();
 
-    
+    gearShift.set(DoubleSolenoid.Value.kForward);
 
     shooter1.restoreFactoryDefaults();
     shooter2.restoreFactoryDefaults();
@@ -109,8 +130,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    
-    
     
     
 
@@ -161,7 +180,7 @@ public class Robot extends TimedRobot {
 
     updateLimelightTracking();
 
-    if (xStick.getAButton()) {
+    if (stick.getRawButton(1)) {
       camMode.setNumber(0);
       ledMode.setNumber(3);
       xStick.setRumble(RumbleType.kLeftRumble, 0.3);
@@ -192,6 +211,9 @@ public class Robot extends TimedRobot {
       gearShift.set(DoubleSolenoid.Value.kForward);
     }
 
+    //intake
+    intake.set(xStick.getY(Hand.kLeft));
+
 
   }
 
@@ -200,13 +222,16 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+
+    System.out.println(imu.getAngle());
+
   }
 
   public void updateLimelightTracking(){
     // These numbers must be tuned for your Robot!  Be careful!
     final double STEER_K = 0.03;                    // how hard to turn toward the target
-    final double DRIVE_K = 0.26;                    // how hard to drive fwd toward the target
-    final double MAX_DRIVE = 0.7;                   // Simple speed limit so we don't drive too fast
+    final double DRIVE_K = 0.03;                    // how hard to drive fwd toward the target
+    final double MAX_DRIVE = 0.5;                   // Simple speed limit so we don't drive too fast
 
     double tv = limelight.getEntry("tv").getDouble(0);
     double tx = limelight.getEntry("tx").getDouble(0);
@@ -240,6 +265,8 @@ public class Robot extends TimedRobot {
     if (drive_cmd > MAX_DRIVE)
     {
       drive_cmd = MAX_DRIVE;
+    } else if (drive_cmd < -MAX_DRIVE){
+      drive_cmd = -MAX_DRIVE;
     }
     LimelightDriveCommand = drive_cmd;
   }
