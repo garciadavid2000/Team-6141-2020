@@ -200,7 +200,7 @@ public class Robot extends TimedRobot {
       
       camMode.setNumber(1);
       ledMode.setNumber(1);
-
+      //bruh
       driveTrain.setMaxOutput(throttleFilter.calculate(((stick.getThrottle()) + 1) / 2));
 
       driveTrain.arcadeDrive(stickFilterY.calculate(stick.getY()), stickFilterZ.calculate(stick.getZ()));
