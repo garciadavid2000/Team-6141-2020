@@ -194,13 +194,13 @@ public class Robot extends TimedRobot {
 
     } else {
       //drive
-      driveTrain.arcadeDrive(stickFilterY.calculate(stick.getY()), stickFilterZ.calculate(stick.getZ()));
-      
       xStick.setRumble(RumbleType.kLeftRumble, 0);
       xStick.setRumble(RumbleType.kLeftRumble, 0);
       
       camMode.setNumber(1);
       ledMode.setNumber(1);
+
+      driveTrain.arcadeDrive(stickFilterY.calculate(stick.getY()), stickFilterZ.calculate(stick.getZ()));
     }
 
 
