@@ -98,6 +98,7 @@ public class Robot extends TimedRobot {
   private Joystick stick = new Joystick(0);
   private SlewRateLimiter stickFilterY = new SlewRateLimiter(1);
   private SlewRateLimiter stickFilterZ = new SlewRateLimiter(1);
+  private SlewRateLimiter throttleFilter = new SlewRateLimiter(1);
 
   private XboxController xStick = new XboxController(1);
 
@@ -199,6 +200,8 @@ public class Robot extends TimedRobot {
       
       camMode.setNumber(1);
       ledMode.setNumber(1);
+
+      driveTrain.setMaxOutput(throttleFilter.calculate(((stick.getThrottle()) + 1) / 2));
 
       driveTrain.arcadeDrive(stickFilterY.calculate(stick.getY()), stickFilterZ.calculate(stick.getZ()));
     }
