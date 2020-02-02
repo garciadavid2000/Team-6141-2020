@@ -88,9 +88,6 @@ public class Robot extends TimedRobot {
   public static final ADIS16448_IMU imu = new ADIS16448_IMU();
 
   //pneumatics
-
-  private Compressor compressor = new Compressor();
-  
   private DoubleSolenoid gearShift = new DoubleSolenoid(0, 1);
 
   // operator input
@@ -112,8 +109,6 @@ public class Robot extends TimedRobot {
     chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", chooser);
 
-
-    compressor.start();
 
     gearShift.set(DoubleSolenoid.Value.kForward);
 
