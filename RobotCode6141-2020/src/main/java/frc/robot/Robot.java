@@ -52,6 +52,7 @@ public class Robot extends TimedRobot {
     //intake
   private Spark intake = new Spark(6);
 
+    //drive train
   private VictorSP leftMotor1 = new VictorSP(0);
   private PWMVictorSPX leftMotor2 = new PWMVictorSPX(1);
   private PWMVictorSPX leftMotor3 = new PWMVictorSPX(2);
@@ -200,8 +201,51 @@ public class Robot extends TimedRobot {
       camMode.setNumber(1);
       ledMode.setNumber(1);
 
-      driveTrain.arcadeDrive(stickFilterY.calculate(stick.getY()), stickFilterZ.calculate(stick.getZ()));
+      double maxSpeed = (((stick.getRawAxis(3)) + 1) / 2);
+      SmartDashboard.putNumber("Max", maxSpeed);
+
+
+      if (stickFilterY.calculate(stick.getY()) > maxSpeed)  {
+        
+        
+        driveTrain.arcadeDrive(maxSpeed, stickFilterZ.calculate(stick.getZ()));
+      
+      
+      } else if (stickFilterZ.calculate(stick.getZ()) > maxSpeed) {
+        
+        
+        driveTrain.arcadeDrive(stickFilterY.calculate(stick.getY()), maxSpeed);
+      
+      
+      } else if (stickFilterY.calculate(stick.getY()) < -maxSpeed)  {
+        
+        
+        driveTrain.arcadeDrive(-maxSpeed, stickFilterZ.calculate(stick.getZ()));
+      
+      
+      } else if (stickFilterZ.calculate(stick.getZ()) < -maxSpeed) {
+        
+        
+        driveTrain.arcadeDrive(stickFilterY.calculate(stick.getY()), -maxSpeed);
+
+    
+      } else if (stickFilterY.calculate(stick.getY()) > maxSpeed && stickFilterZ.calculate(stick.getZ()) > maxSpeed)  {
+        
+        driveTrain.arcadeDrive(maxSpeed, maxSpeed);
+      
+      } else if (stickFilterY.calculate(stick.getY()) < -maxSpeed && stickFilterZ.calculate(stick.getZ()) < -maxSpeed) {
+        
+        driveTrain.arcadeDrive(-maxSpeed, -maxSpeed);
+
+      } else {
+        driveTrain.arcadeDrive(stickFilterY.calculate(stick.getY()), stickFilterZ.calculate(stick.getZ()));
+      }
+    
     }
+    
+    
+    
+      
 
 
     //shifing gears
