@@ -7,11 +7,10 @@
 
 package frc.robot;
 
-import com.analog.adis16448.frc.ADIS16448_IMU;
-
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PWMSparkMax;
@@ -84,7 +83,6 @@ public class Robot extends TimedRobot {
 
   //sensors
 
-  public static final ADIS16448_IMU imu = new ADIS16448_IMU();
 
   //pneumatics
   private DoubleSolenoid gearShift = new DoubleSolenoid(0, 1);
@@ -97,6 +95,7 @@ public class Robot extends TimedRobot {
   private SlewRateLimiter throttleFilter = new SlewRateLimiter(1);
 
   private XboxController xStick = new XboxController(1);
+  
 
   /**
    * This function is run when the robot is first started up and should be
@@ -110,6 +109,8 @@ public class Robot extends TimedRobot {
 
 
     gearShift.set(DoubleSolenoid.Value.kForward);
+
+    
 
     shooter2.setInverted(true);
 
@@ -221,9 +222,9 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
 
-    System.out.println(imu.getAngle());
+    
 
-    shooter.set(0.7);
+    //shooter.set(0.7);
 
 
   }
