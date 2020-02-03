@@ -8,15 +8,13 @@
 package frc.robot;
 
 import com.analog.adis16448.frc.ADIS16448_IMU;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PWMSparkMax;
 import edu.wpi.first.wpilibj.PWMVictorSPX;
 import edu.wpi.first.wpilibj.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Spark;
@@ -46,8 +44,9 @@ public class Robot extends TimedRobot {
   //motors
 
     //shooter
-  private CANSparkMax shooter1 = new CANSparkMax(1, MotorType.kBrushless);
-  private CANSparkMax shooter2 = new CANSparkMax(2, MotorType.kBrushless);
+  private PWMSparkMax shooter1 = new PWMSparkMax(7);
+  private PWMSparkMax shooter2 = new PWMSparkMax(8);
+  private SpeedControllerGroup shooter = new SpeedControllerGroup(shooter1, shooter2);
 
     //intake
   private Spark intake = new Spark(6);
@@ -112,8 +111,8 @@ public class Robot extends TimedRobot {
 
     gearShift.set(DoubleSolenoid.Value.kForward);
 
-    shooter1.restoreFactoryDefaults();
-    shooter2.restoreFactoryDefaults();
+    shooter2.setInverted(true);
+
   }
 
   /**
@@ -222,6 +221,9 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {
 
     System.out.println(imu.getAngle());
+
+    shooter.set(0.7);
+
 
   }
 
