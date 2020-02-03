@@ -224,7 +224,7 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
 
-    System.out.println(imu.getAngle());
+    System.out.println((int)(imu.getAngle()));
 
     //shooter.set(0.7);
 
