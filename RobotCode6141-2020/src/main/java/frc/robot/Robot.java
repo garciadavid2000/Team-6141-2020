@@ -210,7 +210,7 @@ public class Robot extends TimedRobot {
 
     //intake
     intake.set(xStick.getY(Hand.kLeft));
-    //bruh
+    
 
 
   }
