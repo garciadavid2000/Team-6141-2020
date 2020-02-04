@@ -164,6 +164,7 @@ public class Robot extends TimedRobot {
       case kDefaultAuto:
       default:
         // Put default auto code here
+        
         break;
     }
   }
@@ -226,7 +227,7 @@ public class Robot extends TimedRobot {
 
     System.out.println((int)(imu.getAngle()));
 
-    //shooter.set(0.7);
+    shooter2.set(1);
 
 
   }
