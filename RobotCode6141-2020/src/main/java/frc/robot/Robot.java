@@ -43,11 +43,6 @@ public class Robot extends TimedRobot {
   
   //motors
 
-    //shooter
-  private PWMSparkMax shooter1 = new PWMSparkMax(7);
-  private PWMSparkMax shooter2 = new PWMSparkMax(8);
-  private SpeedControllerGroup shooter = new SpeedControllerGroup(shooter1, shooter2);
-
     //intake
   private Spark intake = new Spark(6);
 
@@ -62,6 +57,11 @@ public class Robot extends TimedRobot {
   private SpeedControllerGroup leftMotorGroup = new SpeedControllerGroup(leftMotor1, leftMotor2, leftMotor3);
   private SpeedControllerGroup rightMotorGroup = new SpeedControllerGroup(rightMotor1, rightMotor2, rightMotor3);
   private DifferentialDrive driveTrain = new DifferentialDrive(leftMotorGroup, rightMotorGroup);
+
+    //shooter
+  private PWMSparkMax shooter1 = new PWMSparkMax(7);
+  private PWMSparkMax shooter2 = new PWMSparkMax(8);
+  private SpeedControllerGroup shooter = new SpeedControllerGroup(shooter1, shooter2);
 
   //limelight
 
@@ -214,6 +214,11 @@ public class Robot extends TimedRobot {
 
     //intake
     intake.set(xStick.getY(Hand.kLeft));
+
+    //shooter
+    if (xStick.getBButton()) {
+      shooter.set(0.7);
+    }
     
 
 
