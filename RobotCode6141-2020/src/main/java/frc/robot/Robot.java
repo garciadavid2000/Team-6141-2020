@@ -9,7 +9,7 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
-//import com.analog.adis16470.frc.ADIS16470_IMU;
+import com.analog.adis16470.frc.ADIS16470_IMU;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -47,13 +47,13 @@ public class Robot extends TimedRobot {
     //intake
   private Spark intake = new Spark(6);
 
-  private VictorSP leftMotor1 = new VictorSP(0);
+  private VictorSP leftMotor1 = new VictorSP(1);
   private WPI_VictorSPX leftMotor2 = new WPI_VictorSPX(1);
   private WPI_VictorSPX leftMotor3 = new WPI_VictorSPX(2);
 
-  private VictorSP rightMotor1 = new VictorSP(3);
-  private WPI_VictorSPX rightMotor2 = new WPI_VictorSPX(4);
-  private WPI_VictorSPX rightMotor3 = new WPI_VictorSPX(5);
+  private VictorSP rightMotor1 = new VictorSP(2);
+  private WPI_VictorSPX rightMotor2 = new WPI_VictorSPX(3);
+  private WPI_VictorSPX rightMotor3 = new WPI_VictorSPX(4);
 
   private SpeedControllerGroup leftMotorGroup = new SpeedControllerGroup(leftMotor1, leftMotor2, leftMotor3);
   private SpeedControllerGroup rightMotorGroup = new SpeedControllerGroup(rightMotor1, rightMotor2, rightMotor3);
@@ -85,7 +85,7 @@ public class Robot extends TimedRobot {
 
   //sensors
 
-  //private ADIS16470_IMU imu = new ADIS16470_IMU();
+  private ADIS16470_IMU imu = new ADIS16470_IMU();
 
   //pneumatics
   private DoubleSolenoid gearShift = new DoubleSolenoid(0, 1);
