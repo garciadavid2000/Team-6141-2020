@@ -48,11 +48,11 @@ public class Robot extends TimedRobot {
   private Spark intake = new Spark(6);
 
   private VictorSP leftMotor1 = new VictorSP(1);
-  private WPI_VictorSPX leftMotor2 = new WPI_VictorSPX(1);
-  private WPI_VictorSPX leftMotor3 = new WPI_VictorSPX(2);
+  private VictorSP leftMotor2 = new VictorSP(2);
+  private VictorSP leftMotor3 = new VictorSP(3);
 
-  private VictorSP rightMotor1 = new VictorSP(2);
-  private WPI_VictorSPX rightMotor2 = new WPI_VictorSPX(3);
+  private WPI_VictorSPX rightMotor1 = new WPI_VictorSPX(1);
+  private WPI_VictorSPX rightMotor2 = new WPI_VictorSPX(2);
   private WPI_VictorSPX rightMotor3 = new WPI_VictorSPX(4);
 
   private SpeedControllerGroup leftMotorGroup = new SpeedControllerGroup(leftMotor1, leftMotor2, leftMotor3);
