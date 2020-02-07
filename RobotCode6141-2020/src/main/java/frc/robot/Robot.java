@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+
 //import com.analog.adis16470.frc.ADIS16470_IMU;
 
 import edu.wpi.first.networktables.NetworkTable;
@@ -15,7 +17,6 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PWMSparkMax;
-import edu.wpi.first.wpilibj.PWMVictorSPX;
 import edu.wpi.first.wpilibj.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
@@ -47,12 +48,12 @@ public class Robot extends TimedRobot {
   private Spark intake = new Spark(6);
 
   private VictorSP leftMotor1 = new VictorSP(0);
-  private PWMVictorSPX leftMotor2 = new PWMVictorSPX(1);
-  private PWMVictorSPX leftMotor3 = new PWMVictorSPX(2);
+  private WPI_VictorSPX leftMotor2 = new WPI_VictorSPX(1);
+  private WPI_VictorSPX leftMotor3 = new WPI_VictorSPX(2);
 
   private VictorSP rightMotor1 = new VictorSP(3);
-  private PWMVictorSPX rightMotor2 = new PWMVictorSPX(4);
-  private PWMVictorSPX rightMotor3 = new PWMVictorSPX(5);
+  private WPI_VictorSPX rightMotor2 = new WPI_VictorSPX(4);
+  private WPI_VictorSPX rightMotor3 = new WPI_VictorSPX(5);
 
   private SpeedControllerGroup leftMotorGroup = new SpeedControllerGroup(leftMotor1, leftMotor2, leftMotor3);
   private SpeedControllerGroup rightMotorGroup = new SpeedControllerGroup(rightMotor1, rightMotor2, rightMotor3);
