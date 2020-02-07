@@ -7,7 +7,7 @@
 
 package frc.robot;
 
-import com.analog.adis16470.frc.ADIS16470_IMU;
+//import com.analog.adis16470.frc.ADIS16470_IMU;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -84,7 +84,7 @@ public class Robot extends TimedRobot {
 
   //sensors
 
-  private ADIS16470_IMU imu = new ADIS16470_IMU();
+  //private ADIS16470_IMU imu = new ADIS16470_IMU();
 
   //pneumatics
   private DoubleSolenoid gearShift = new DoubleSolenoid(0, 1);
@@ -114,7 +114,7 @@ public class Robot extends TimedRobot {
 
     
 
-    shooter2.setInverted(true);
+    shooter1.setInverted(true);
 
   }
 
@@ -230,9 +230,9 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
 
-    System.out.println((int)(imu.getAngle()));
+    
 
-    shooter2.set(1);
+    shooter.set(1);
 
 
   }
