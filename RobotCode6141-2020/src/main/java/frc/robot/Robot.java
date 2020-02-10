@@ -16,14 +16,12 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PWMSparkMax;
-import edu.wpi.first.wpilibj.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Spark;
+import edu.wpi.first.wpilibj.SlewRateLimiter;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -45,7 +43,7 @@ public class Robot extends TimedRobot {
   //motors
 
     //intake
-  private Spark intake = new Spark(6);
+  //private Spark intake = new Spark(6);
 
   private VictorSP leftMotor1 = new VictorSP(1);
   private WPI_VictorSPX leftMotor2 = new WPI_VictorSPX(1);
@@ -60,8 +58,8 @@ public class Robot extends TimedRobot {
   private DifferentialDrive driveTrain = new DifferentialDrive(leftMotorGroup, rightMotorGroup);
 
     //shooter
-  private PWMSparkMax shooter1 = new PWMSparkMax(7);
-  private PWMSparkMax shooter2 = new PWMSparkMax(8);
+  private Spark shooter1 = new Spark(5);
+  private Spark shooter2 = new Spark(6);
   private SpeedControllerGroup shooter = new SpeedControllerGroup(shooter1, shooter2);
 
   //limelight
@@ -214,7 +212,7 @@ public class Robot extends TimedRobot {
     }
 
     //intake
-    intake.set(xStick.getY(Hand.kLeft));
+    //intake.set(xStick.getY(Hand.kLeft));
 
     //shooter
     if (xStick.getBButton()) {
@@ -233,7 +231,11 @@ public class Robot extends TimedRobot {
 
     
 
-    shooter.set(1);
+    shooter.set(0);
+
+    if (xStick.getAButton()) {
+      shooter.set(1);
+    }
 
 
   }
