@@ -96,6 +96,7 @@ public class Robot extends TimedRobot {
   private SlewRateLimiter throttleFilter = new SlewRateLimiter(1);
 
   private XboxController xStick = new XboxController(1);
+  private XboxController ystick = new XboxController(2);
   
 
   /**
