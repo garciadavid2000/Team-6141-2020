@@ -58,8 +58,8 @@ public class Robot extends TimedRobot {
   private DifferentialDrive driveTrain = new DifferentialDrive(leftMotorGroup, rightMotorGroup);
 
     //shooter
-  private Spark shooter1 = new Spark(9);
-  private Spark shooter2 = new Spark(8);
+  private Spark shooter1 = new Spark(3);
+  private Spark shooter2 = new Spark(4);
   private SpeedControllerGroup shooter = new SpeedControllerGroup(shooter1, shooter2);
 
   //limelight
@@ -237,7 +237,7 @@ public class Robot extends TimedRobot {
     //   shooter.set(1);
     // }
 
-    shooter.set(1);
+    shooter.set(0.50);
 
 
   }
