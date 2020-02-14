@@ -96,8 +96,6 @@ public class Robot extends TimedRobot {
   private SlewRateLimiter throttleFilter = new SlewRateLimiter(1);
 
   private XboxController xStick = new XboxController(1);
-  private XboxController ystick = new XboxController(2);
-  
 
   /**
    * This function is run when the robot is first started up and should be
@@ -108,6 +106,7 @@ public class Robot extends TimedRobot {
     chooser.setDefaultOption("Default Auto", kDefaultAuto);
     chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", chooser);
+    imu.calibrate(); //used to recalibrate gyro when robot is turned on
 
 
     gearShift.set(DoubleSolenoid.Value.kForward);
@@ -156,7 +155,9 @@ public class Robot extends TimedRobot {
    * This function is called periodically during autonomous.
    */
   @Override
-  public void autonomousPeriodic() {
+  public void autonomousPeriodic(){
+    imu.getAngle();// Can be used to get the angle of the gyro
+                   // Can also be split into x y and z values
     switch (autoSelected) {
       case kCustomAuto:
         // Put custom auto code here
@@ -166,6 +167,7 @@ public class Robot extends TimedRobot {
         // Put default auto code here
         
         break;
+        
     }
   }
 
