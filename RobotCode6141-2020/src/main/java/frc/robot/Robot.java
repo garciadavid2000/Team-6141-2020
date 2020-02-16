@@ -8,7 +8,8 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
 import com.analog.adis16470.frc.ADIS16470_IMU;
 
 import edu.wpi.first.networktables.NetworkTable;
@@ -24,8 +25,13 @@ import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Units;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -47,11 +53,10 @@ public class Robot extends TimedRobot {
 
   private VictorSP leftMotor1 = new VictorSP(1);
   private WPI_VictorSPX leftMotor2 = new WPI_VictorSPX(1);
-  private WPI_VictorSPX leftMotor3 = new WPI_VictorSPX(2);
-
+  private CANSparkMax leftMotor3 = new CANSparkMax(2, CANSparkMaxLowLevel.MotorType.kBrushless);
   private VictorSP rightMotor1 = new VictorSP(2);
   private WPI_VictorSPX rightMotor2 = new WPI_VictorSPX(3);
-  private WPI_VictorSPX rightMotor3 = new WPI_VictorSPX(4);
+  private CANSparkMax rightMotor3 = new CANSparkMax(4, CANSparkMaxLowLevel.MotorType.kBrushless);
 
   private SpeedControllerGroup leftMotorGroup = new SpeedControllerGroup(leftMotor1, leftMotor2, leftMotor3);
   private SpeedControllerGroup rightMotorGroup = new SpeedControllerGroup(rightMotor1, rightMotor2, rightMotor3);
@@ -96,6 +101,15 @@ public class Robot extends TimedRobot {
   private SlewRateLimiter throttleFilter = new SlewRateLimiter(1);
 
   private XboxController xStick = new XboxController(1);
+
+  //auto stuff
+  DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(28)); // this is just a random value, insert actual value on tues
+  DifferentialDriveOdometry odometry = new DifferentialDriveOdometry; // in the video, it says that there
+                                                                                    // should be another arguement for
+                                                                                    // the kinematics we just made,
+                                                                                    //but wpilib doesn't seem to want to have it.
+                                                                                
+  
 
   /**
    * This function is run when the robot is first started up and should be
@@ -295,5 +309,21 @@ public class Robot extends TimedRobot {
 
     distance = (h2 - h1) / (Math.tan(Math.toRadians(a1 + ty)));
 
+  }
+
+  public Rotation2d getHeading(){
+    return Rotation2d.fromDegrees(-imu.getAngle());
+  }
+  
+  public DifferentialDriveWheelSpeeds getSpeeds(){
+    return new DifferentialDriveWheelSpeeds
+    (leftMotor3.getEncoder().getVelocity() /7.29 * 2 * Math.PI * Units.inchesToMeters(6) /60 , 
+    rightMotor3.getEncoder().getVelocity()/7.29 * 2 * Math.PI * Units.inchesToMeters(6) /60 
+    );
+  }
+
+  @Override
+  public void periodic(){
+    odometry.update(getHeading(), getSpeeds() );
   }
 }
