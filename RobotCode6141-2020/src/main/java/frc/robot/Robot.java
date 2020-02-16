@@ -10,11 +10,13 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.analog.adis16470.frc.ADIS16470_IMU;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Spark;
@@ -25,6 +27,7 @@ import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
@@ -32,6 +35,9 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
+
+import com.revrobotics.CANEncoder;
+import com.revrobotics.AlternateEncoderType;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -53,19 +59,21 @@ public class Robot extends TimedRobot {
 
   private VictorSP leftMotor1 = new VictorSP(1);
   private WPI_VictorSPX leftMotor2 = new WPI_VictorSPX(1);
-  private CANSparkMax leftMotor3 = new CANSparkMax(2, CANSparkMaxLowLevel.MotorType.kBrushless);
+  private WPI_VictorSPX leftMotor3 = new WPI_VictorSPX(2);
   private VictorSP rightMotor1 = new VictorSP(2);
   private WPI_VictorSPX rightMotor2 = new WPI_VictorSPX(3);
-  private CANSparkMax rightMotor3 = new CANSparkMax(4, CANSparkMaxLowLevel.MotorType.kBrushless);
+  private WPI_VictorSPX rightMotor3 = new WPI_VictorSPX(4);
 
   private SpeedControllerGroup leftMotorGroup = new SpeedControllerGroup(leftMotor1, leftMotor2, leftMotor3);
   private SpeedControllerGroup rightMotorGroup = new SpeedControllerGroup(rightMotor1, rightMotor2, rightMotor3);
   private DifferentialDrive driveTrain = new DifferentialDrive(leftMotorGroup, rightMotorGroup);
 
     //shooter
-  private Spark shooter1 = new Spark(9);
-  private Spark shooter2 = new Spark(8);
+  private CANSparkMax shooter1 = new CANSparkMax(9, MotorType.kBrushless);
+  private CANSparkMax shooter2 = new CANSparkMax(8, MotorType.kBrushless);
   private SpeedControllerGroup shooter = new SpeedControllerGroup(shooter1, shooter2);
+  private static final AlternateEncoderType kAltEncType = AlternateEncoderType.kQuadrature;
+  private CANEncoder m_Encoder;
 
   //limelight
 
@@ -102,12 +110,14 @@ public class Robot extends TimedRobot {
 
   private XboxController xStick = new XboxController(1);
 
-  //auto stuff
-  DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(28)); // this is just a random value, insert actual value on tues
-  DifferentialDriveOdometry odometry = new DifferentialDriveOdometry; // in the video, it says that there
+  // //auto stuff
+  // DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(28)); // this is just a random value, insert actual value on tues
+  // DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(getHeading(), new Pose2d(0.0, 0.0, new Rotation2d()));// in the video, it says that there
                                                                                     // should be another arguement for
                                                                                     // the kinematics we just made,
                                                                                     //but wpilib doesn't seem to want to have it.
+  //endcoders
+  
                                                                                 
   
 
@@ -311,19 +321,20 @@ public class Robot extends TimedRobot {
 
   }
 
-  public Rotation2d getHeading(){
-    return Rotation2d.fromDegrees(-imu.getAngle());
-  }
+  // public Rotation2d getHeading(){
+  //   return Rotation2d.fromDegrees(-imu.getAngle());
   
-  public DifferentialDriveWheelSpeeds getSpeeds(){
-    return new DifferentialDriveWheelSpeeds
-    (leftMotor3.getEncoder().getVelocity() /7.29 * 2 * Math.PI * Units.inchesToMeters(6) /60 , 
-    rightMotor3.getEncoder().getVelocity()/7.29 * 2 * Math.PI * Units.inchesToMeters(6) /60 
-    );
-  }
+  
+//   public DifferentialDriveWheelSpeeds getSpeeds(){
+//     return new DifferentialDriveWheelSpeeds
+//     (leftMotor3.getEncoder().getVelocity() /7.29 * 2 * Math.PI * Units.inchesToMeters(6) /60 , 
+//     rightMotor3.getEncoder().getVelocity()/7.29 * 2 * Math.PI * Units.inchesToMeters(6) /60 
+//     );
+//   }
 
-  @Override
-  public void periodic(){
-    odometry.update(getHeading(), getSpeeds() );
-  }
-}
+
+//   @Override
+//   public void periodic(){
+//     odometry.update(getHeading(), getSpeeds() );
+//   }
+ }
