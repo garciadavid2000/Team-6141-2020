@@ -200,7 +200,7 @@ public class Robot extends TimedRobot {
       
       driveTrain.setMaxOutput(throttleFilter.calculate(((stick.getThrottle()) - 1) / 2));
 
-      driveTrain.arcadeDrive(stickFilterY.calculate(stick.getY()), stickFilterZ.calculate(stick.getZ()));
+      driveTrain.arcadeDrive(stickFilterY.calculate(stick.getY()) * ((stick.getThrottle()) - 1) / 2, stickFilterZ.calculate(stick.getZ()) * ((stick.getThrottle()) - 1) / 2);
     }
 
 
