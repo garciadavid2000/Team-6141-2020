@@ -201,7 +201,8 @@ public class Robot extends TimedRobot {
 
       driveTrain.arcadeDrive(stick.getY(), stick.getZ());
 
-      driveTrain.arcadeDrive(stickFilterY.calculate(stick.getY()) * ((stick.getThrottle()) - 1) / 2, stickFilterZ.calculate(stick.getZ()) * ((stick.getThrottle()) - 1) / 2);
+      driveTrain.arcadeDrive(stick.getY() * ((stick.getThrottle()) - 1) / 2, 
+      stick.getZ() * ((stick.getThrottle()) - 1) / 2);
 
     }
 
