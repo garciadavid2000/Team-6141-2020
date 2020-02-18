@@ -39,7 +39,7 @@ public class Robot extends TimedRobot {
   private static final String kCustomAuto = "My Auto";
   private String autoSelected;
   private final SendableChooser<String> chooser = new SendableChooser<>();
-  
+
   //motors
 
     //intake
@@ -94,7 +94,7 @@ public class Robot extends TimedRobot {
   private SlewRateLimiter throttleFilter = new SlewRateLimiter(2);
 
   private XboxController xStick = new XboxController(1);
-  
+
 
   /**
    * This function is run when the robot is first started up and should be
@@ -109,7 +109,7 @@ public class Robot extends TimedRobot {
 
     gearShift.set(DoubleSolenoid.Value.kReverse);
 
-    
+
 
     shooter1.setInverted(true);
 
@@ -125,8 +125,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    
-    
+
+
 
 
   }
@@ -161,7 +161,7 @@ public class Robot extends TimedRobot {
       case kDefaultAuto:
       default:
         // Put default auto code here
-        
+
         break;
     }
   }
@@ -171,7 +171,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    
+
     //limelight
 
     updateLimelightTracking();
@@ -192,13 +192,17 @@ public class Robot extends TimedRobot {
       //drive
       xStick.setRumble(RumbleType.kLeftRumble, 0);
       xStick.setRumble(RumbleType.kLeftRumble, 0);
-      
+
       camMode.setNumber(1);
       ledMode.setNumber(1);
-      
+
       driveTrain.setMaxOutput(throttleFilter.calculate(((stick.getThrottle()) - 1) / 2));
 
+
       driveTrain.arcadeDrive(stick.getY(), stick.getZ());
+
+      driveTrain.arcadeDrive(stickFilterY.calculate(stick.getY()) * ((stick.getThrottle()) - 1) / 2, stickFilterZ.calculate(stick.getZ()) * ((stick.getThrottle()) - 1) / 2);
+
     }
 
 
@@ -216,7 +220,7 @@ public class Robot extends TimedRobot {
     if (xStick.getBButton()) {
       shooter.set(0.7);
     }
-    
+
 
 
   }
@@ -227,7 +231,7 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
 
-    
+
 
     // shooter.set(0);
 
