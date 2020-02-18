@@ -45,13 +45,13 @@ public class Robot extends TimedRobot {
     //intake
   //private Spark intake = new Spark(6);
 
-  private VictorSP leftMotor1 = new VictorSP(1);
+  private VictorSP leftMotor1 = new VictorSP(0);
   private WPI_VictorSPX leftMotor2 = new WPI_VictorSPX(1);
-  private WPI_VictorSPX leftMotor3 = new WPI_VictorSPX(2);
+  private WPI_VictorSPX leftMotor3 = new WPI_VictorSPX(4);
 
-  private VictorSP rightMotor1 = new VictorSP(2);
-  private WPI_VictorSPX rightMotor2 = new WPI_VictorSPX(3);
-  private WPI_VictorSPX rightMotor3 = new WPI_VictorSPX(4);
+  private VictorSP rightMotor1 = new VictorSP(1);
+  private WPI_VictorSPX rightMotor2 = new WPI_VictorSPX(2);
+  private WPI_VictorSPX rightMotor3 = new WPI_VictorSPX(3);
 
   private SpeedControllerGroup leftMotorGroup = new SpeedControllerGroup(leftMotor1, leftMotor2, leftMotor3);
   private SpeedControllerGroup rightMotorGroup = new SpeedControllerGroup(rightMotor1, rightMotor2, rightMotor3);
@@ -91,9 +91,7 @@ public class Robot extends TimedRobot {
   // operator input
 
   private Joystick stick = new Joystick(0);
-  private SlewRateLimiter stickFilterY = new SlewRateLimiter(1);
-  private SlewRateLimiter stickFilterZ = new SlewRateLimiter(1);
-  private SlewRateLimiter throttleFilter = new SlewRateLimiter(1);
+  private SlewRateLimiter throttleFilter = new SlewRateLimiter(2);
 
   private XboxController xStick = new XboxController(1);
   
@@ -109,7 +107,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Auto choices", chooser);
 
 
-    gearShift.set(DoubleSolenoid.Value.kForward);
+    gearShift.set(DoubleSolenoid.Value.kReverse);
 
     
 
@@ -200,7 +198,7 @@ public class Robot extends TimedRobot {
       
       driveTrain.setMaxOutput(throttleFilter.calculate(((stick.getThrottle()) - 1) / 2));
 
-      driveTrain.arcadeDrive(stickFilterY.calculate(stick.getY()), stickFilterZ.calculate(stick.getZ()));
+      driveTrain.arcadeDrive(stick.getY(), stick.getZ());
     }
 
 
