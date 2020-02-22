@@ -14,6 +14,7 @@ import com.analog.adis16470.frc.ADIS16470_IMU;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Spark;
@@ -40,6 +41,7 @@ public class Robot extends TimedRobot {
   private String autoSelected;
   private final SendableChooser<String> chooser = new SendableChooser<>();
 
+  //private Compressor c = new Compressor();
   //motors
 
     //intake
@@ -171,7 +173,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-
+    
     //limelight
 
     updateLimelightTracking();
@@ -199,7 +201,7 @@ public class Robot extends TimedRobot {
       driveTrain.setMaxOutput(throttleFilter.calculate(((stick.getThrottle()) - 1) / 2));
 
 
-      driveTrain.arcadeDrive(stick.getY(), stick.getZ());
+      //driveTrain.arcadeDrive(stick.getY(), stick.getZ());
 
       driveTrain.arcadeDrive(stick.getY() * ((stick.getThrottle()) - 1) / 2, 
       stick.getZ() * ((stick.getThrottle()) - 1) / 2);
