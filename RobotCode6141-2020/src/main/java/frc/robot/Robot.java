@@ -13,6 +13,10 @@ import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.ControlType;
 import com.revrobotics.EncoderType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import java.io.IOException;
+import java.nio.file.Path;
+
 import com.analog.adis16470.frc.ADIS16470_IMU;
 
 import edu.wpi.first.networktables.NetworkTable;
@@ -20,6 +24,8 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Spark;
@@ -29,6 +35,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -37,6 +44,9 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
+import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj.util.Units;
 
 import com.revrobotics.CANEncoder;
@@ -79,6 +89,7 @@ public class Robot extends TimedRobot {
 
   //encoder
   private CANEncoder leftEncoder = leftMotor1.getEncoder(EncoderType.kQuadrature, 4096);
+  private CANEncoder rightEncoder = rightMotor1.getEncoder(EncoderType.kQuadrature, 4096);
  
 
   // limelight
@@ -99,6 +110,9 @@ public class Robot extends TimedRobot {
   private final double a1 = 5;
   private double distance;
   private final double desiredDistance = 200;
+
+  //Odometry
+  private final DifferentialDriveOdometry odometry;
 
   // sensors
 
@@ -128,6 +142,18 @@ public class Robot extends TimedRobot {
   // but wpilib doesn't seem to want to have it.
   // endcoders
 
+  //Trajectories
+  String trajectoryJSON = "path/Newpath.wpilib.json"; {
+    try{
+
+      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+      Trajectory trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+      
+    } catch (IOException ex){
+      DriverStation.reportError("Cannot open trajectory: " + trajectoryJSON, ex.getStackTrace());
+    }
+  }
+  
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
@@ -341,5 +367,26 @@ public class Robot extends TimedRobot {
   // @Override
   // public void periodic(){
   // odometry.update(getHeading(), getSpeeds() );
-  // }
+  // }frc
+
+  public Command getAutonomous(){
+      var autoVoltageConstraint = 
+      new DifferentialDriveVoltageConstraint(new SimpleMotorFeedForward(
+        DriveConstraints.ksVolts,
+      ), kinematics, maxVoltage)
+
+  }
+
+  public void periodic(){
+    odometry.update(Rotation2d.fromDegrees(imu.getAngle()), leftEncoder.getPosition(), rightEncoder.getPosition());
+
+
+  }
+  public void setVoltage(double leftVolts, double rightVolts){
+    leftMotorGroup.setVoltage(leftVolts);
+    rightMotorGroup.setVoltage(-rightVolts);
+    driveTrain.feed();
+    
+  }
+ 
 }
