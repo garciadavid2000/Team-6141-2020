@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motion.TrajectoryPoint;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
@@ -36,6 +37,8 @@ import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.controller.RamseteController;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -45,6 +48,7 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj.util.Units;
@@ -52,6 +56,8 @@ import edu.wpi.first.wpilibj.util.Units;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.AlternateEncoderType;
+
+
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -112,7 +118,7 @@ public class Robot extends TimedRobot {
   private final double desiredDistance = 200;
 
   //Odometry
-  private final DifferentialDriveOdometry odometry;
+  
 
   // sensors
 
@@ -129,6 +135,21 @@ public class Robot extends TimedRobot {
   private SlewRateLimiter throttleFilter = new SlewRateLimiter(1);
 
   private XboxController xStick = new XboxController(1);
+
+
+SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.888, 0.0307);
+
+public static final double kTrackwidthMeters = 0.5588;
+public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
+
+public static final double kMaxSpeedMetersPerSecond = 3;
+public static final double kMaxAccelerationMetresPerSecondSquared = 3;
+
+public static final double kRamseteB = 2;
+public static final double kRamseteZeta = 0.7;
+
+private final DifferentialDriveOdometry m_Odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(imu.getAngle()));
+
 
   // //auto stuff
   // DifferentialDriveKinematics kinematics = new
@@ -153,6 +174,7 @@ public class Robot extends TimedRobot {
       DriverStation.reportError("Cannot open trajectory: " + trajectoryJSON, ex.getStackTrace());
     }
   }
+  
   
   /**
    * This function is run when the robot is first started up and should be used
@@ -234,8 +256,6 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     
-   
-
     
     
 
@@ -371,14 +391,22 @@ public class Robot extends TimedRobot {
 
   public Command getAutonomous(){
       var autoVoltageConstraint = 
-      new DifferentialDriveVoltageConstraint(new SimpleMotorFeedForward(
-        DriveConstraints.ksVolts,
-      ), kinematics, maxVoltage)
+      new DifferentialDriveVoltageConstraint(feedforward, kDriveKinematics, 10);
+
+      TrajectoryConfig config = new TrajectoryConfig
+      (kMaxSpeedMetersPerSecond, kMaxAccelerationMetresPerSecondSquared)
+      .setKinematics(kDriveKinematics).addConstraint(autoVoltageConstraint);
+
+      RamseteController ramseteController = new RamseteController(kRamseteB, kRamseteZeta);
+      ramseteController.
+
 
   }
 
+  
+
   public void periodic(){
-    odometry.update(Rotation2d.fromDegrees(imu.getAngle()), leftEncoder.getPosition(), rightEncoder.getPosition());
+    m_Odometry.update(Rotation2d.fromDegrees(imu.getAngle()), leftEncoder.getPosition(), rightEncoder.getPosition());
 
 
   }
@@ -388,5 +416,11 @@ public class Robot extends TimedRobot {
     driveTrain.feed();
     
   }
- 
+  public void setVolts(double leftVolts, double rightVolts) {
+    leftMotorGroup.setVoltage(leftVolts);
+    rightMotorGroup.setVoltage(-rightVolts);
+  }
 }
+
+ 
+
