@@ -389,6 +389,16 @@ private final DifferentialDriveOdometry m_Odometry = new DifferentialDriveOdomet
   // }frc
 
   public Command getAutonomous(){
+    String trajectoryJSON = "path/Newpath.wpilib.json"; {
+      try{
+  
+        Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+        Trajectory trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+        
+      } catch (IOException ex){
+        DriverStation.reportError("Cannot open trajectory: " + trajectoryJSON, ex.getStackTrace());
+      }
+    }
       var autoVoltageConstraint = 
       new DifferentialDriveVoltageConstraint(feedforward, kDriveKinematics, 10);
 
@@ -396,7 +406,13 @@ private final DifferentialDriveOdometry m_Odometry = new DifferentialDriveOdomet
       (kMaxSpeedMetersPerSecond, kMaxAccelerationMetresPerSecondSquared)
       .setKinematics(kDriveKinematics).addConstraint(autoVoltageConstraint);
 
-      Ramsete
+      Trajectory.State goal = trajectory.sample
+      
+      
+
+      RamseteController ramseteController = new RamseteController(kRamseteB, kRamseteZeta);
+      ramseteController.
+      
       
 
 
