@@ -14,7 +14,6 @@ import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.ControlType;
 import com.revrobotics.EncoderType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -397,8 +396,8 @@ private final DifferentialDriveOdometry m_Odometry = new DifferentialDriveOdomet
       (kMaxSpeedMetersPerSecond, kMaxAccelerationMetresPerSecondSquared)
       .setKinematics(kDriveKinematics).addConstraint(autoVoltageConstraint);
 
-      RamseteController ramseteController = new RamseteController(kRamseteB, kRamseteZeta);
-      ramseteController.
+      Ramsete
+      
 
 
   }
