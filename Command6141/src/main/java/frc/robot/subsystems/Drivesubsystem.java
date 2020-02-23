@@ -20,10 +20,13 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Drivesubsystem extends SubsystemBase {
-  private  final CANSparkMax leftMaster = new CANSparkMax(1, CANSparkMax.MotorType.kBrushless);
+  
+public static Object m_robotDrive;
+private  final CANSparkMax leftMaster = new CANSparkMax(1, CANSparkMax.MotorType.kBrushless);
   private final  WPI_VictorSPX leftSlave1 = new WPI_VictorSPX(1);
   private final  WPI_VictorSPX leftSlave2 = new WPI_VictorSPX(2);
 
@@ -31,7 +34,7 @@ public class Drivesubsystem extends SubsystemBase {
   private final  WPI_VictorSPX rightSlave1 = new WPI_VictorSPX(3);
   private final  WPI_VictorSPX rightSlave2 = new WPI_VictorSPX(4);
 
-  private final DifferentialDrive m_Drive = new DifferentialDrive(leftMaster, rightMaster);
+  private final   DifferentialDrive m_Drive = new DifferentialDrive(leftMaster, rightMaster);
 
   //encoders
   private final  CANEncoder m_LeftEncoder = new CANEncoder(leftMaster);
@@ -128,5 +131,9 @@ public class Drivesubsystem extends SubsystemBase {
   public double getTurnRate(){
     return imu.getRate();
   }
+
+
+
+ 
 
 }
