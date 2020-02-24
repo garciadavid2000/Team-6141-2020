@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import frc.robot.commands.ExampleCommand;
@@ -26,6 +27,7 @@ import frc.robot.subsystems.Drivesubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
@@ -36,6 +38,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+
+  private Drivesubsystem drive = new Drivesubsystem();
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
@@ -74,33 +78,34 @@ public class RobotContainer {
       .setKinematics(Constants.kDriveKinematics).addConstraint(autoVoltageConstraint);
 
 
-      //Generate Trajectory
-      String trajectoryJSON = "paths/AutoPath.wpilib.json";
-      
-        Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
-        Trajectory autoTrajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-      
+       
+      Trajectory autoTrajectory = autoTrajectoryGenerator();
+     
         
      
-	RamseteCommand ramsesteCommand = new RamseteCommand(autoTrajectory, Drivesubsystem::getPose,
+    RamseteCommand ramsesteCommand = new RamseteCommand(autoTrajectory, drive::getPose,
       new RamseteController(Constants.kRamseteB, Constants.kRamseteZeta),
       new SimpleMotorFeedforward(Constants.ksVolts, Constants.kvVoltsSecondsPerMeter),
       Constants.kDriveKinematics,
-      Drivesubsystem::getWheelSpeeds,
+      drive::getWheelSpeeds,
       new PIDController(Constants.kP_drive, 0, 0),
-      new PIDController(Constants.kP_drive, 0, 0),
-      Drivesubsystem::tankDriveVolts
-      
+      new PIDController(Constants.kP_drive, 0, 0),  
+      drive::tankDriveVolts,
+      drive);
+  return ramsesteCommand.andThen(() -> drive.tankDriveVolts(0, 0));
+  }
 
-            );
-
-
-      
-
-      
-
-      
-
-
+  private Trajectory autoTrajectoryGenerator() {
+    String trajectoryJSON = "Path/AutoPath.wpilib.json";
+    try{ 
+      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+        Trajectory trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+        return trajectory;
+       } catch (IOException ex){
+         DriverStation.reportError("Umable to open", ex.getStackTrace());
+         return null;
+ 
+       }
+       
   }
 }
