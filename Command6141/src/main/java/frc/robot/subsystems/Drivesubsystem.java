@@ -26,7 +26,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Drivesubsystem extends SubsystemBase {
   
 public static Object m_robotDrive;
-private  final CANSparkMax leftMaster = new CANSparkMax(1, CANSparkMax.MotorType.kBrushless);
+  private  final CANSparkMax leftMaster = new CANSparkMax(1, CANSparkMax.MotorType.kBrushless);
   private final  WPI_VictorSPX leftSlave1 = new WPI_VictorSPX(1);
   private final  WPI_VictorSPX leftSlave2 = new WPI_VictorSPX(2);
 
