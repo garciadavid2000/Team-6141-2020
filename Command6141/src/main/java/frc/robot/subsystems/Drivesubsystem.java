@@ -46,8 +46,7 @@ public class Drivesubsystem extends SubsystemBase {
 
   private final DifferentialDriveOdometry m_Odometry;
  
-  private XboxController xbox_controller = new XboxController(1);
-  private Joystick joystick = new Joystick(0);
+ 
 
 
 
