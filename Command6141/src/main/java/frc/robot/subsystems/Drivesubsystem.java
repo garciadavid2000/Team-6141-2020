@@ -25,19 +25,19 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Drivesubsystem extends SubsystemBase {
   
-public static Object m_robotDrive;
-  private  final CANSparkMax leftMaster = new CANSparkMax(1, CANSparkMax.MotorType.kBrushless);
-  private final  WPI_VictorSPX leftSlave1 = new WPI_VictorSPX(1);
-  private final  WPI_VictorSPX leftSlave2 = new WPI_VictorSPX(2);
+  public static Object m_robotDrive;
+  private final CANSparkMax leftMaster = new CANSparkMax(1, CANSparkMax.MotorType.kBrushless);
+  private final WPI_VictorSPX leftSlave1 = new WPI_VictorSPX(1);
+  private final WPI_VictorSPX leftSlave2 = new WPI_VictorSPX(2);
 
   private final CANSparkMax rightMaster = new CANSparkMax(2, CANSparkMax.MotorType.kBrushless);
-  private final  WPI_VictorSPX rightSlave1 = new WPI_VictorSPX(3);
-  private final  WPI_VictorSPX rightSlave2 = new WPI_VictorSPX(4);
+  private final WPI_VictorSPX rightSlave1 = new WPI_VictorSPX(3);
+  private final WPI_VictorSPX rightSlave2 = new WPI_VictorSPX(4);
 
-  private final   DifferentialDrive m_Drive = new DifferentialDrive(leftMaster, rightMaster);
+  private final DifferentialDrive m_Drive = new DifferentialDrive(leftMaster, rightMaster);
 
   //encoders
-  private final  CANEncoder m_LeftEncoder = new CANEncoder(leftMaster);
+  private final CANEncoder m_LeftEncoder = new CANEncoder(leftMaster);
   private final CANEncoder m_RightEncoder = new CANEncoder(rightMaster);
 
   private final ADIS16470_IMU imu = new ADIS16470_IMU();
