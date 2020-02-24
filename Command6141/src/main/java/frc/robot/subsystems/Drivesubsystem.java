@@ -13,8 +13,10 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -43,6 +45,10 @@ public class Drivesubsystem extends SubsystemBase {
   private final ADIS16470_IMU imu = new ADIS16470_IMU();
 
   private final DifferentialDriveOdometry m_Odometry;
+ 
+  private XboxController xbox_controller = new XboxController(1);
+  private Joystick joystick = new Joystick(0);
+
 
 
   /**
