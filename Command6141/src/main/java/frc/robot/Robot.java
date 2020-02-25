@@ -7,20 +7,37 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-
+/** TODO
+ * Limelight
+ * Teleop
+ * Shooter
+ * PID for Shooter
+ * Limelight with Shooter in Auto
+ */
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+   Joystick joystick = new Joystick(1);
+   XboxController xboxController = new XboxController(0);
+   JoystickButton joystickButton = new JoystickButton(joystick, 1);
+  /**
+   * We have to make commands for when the buttons are pressed, we could have a button to have the limelight
+   * position the robot and shoot the ball possibly?
+   * We could also have commands for driving
+   */
 
   /**
    * This function is run when the robot is first started up and should be used for any

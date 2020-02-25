@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -36,7 +37,13 @@ public class Drivesubsystem extends SubsystemBase {
   private final WPI_VictorSPX rightSlave1 = new WPI_VictorSPX(3);
   private final WPI_VictorSPX rightSlave2 = new WPI_VictorSPX(4);
 
+  
+
+  
   private final DifferentialDrive m_Drive = new DifferentialDrive(leftMaster, rightMaster);
+
+  //solenoid
+  private final DoubleSolenoid gearshift = new DoubleSolenoid(0, 1);
 
   //encoders
   private final CANEncoder m_LeftEncoder = new CANEncoder(leftMaster);
