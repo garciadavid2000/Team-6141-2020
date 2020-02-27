@@ -39,10 +39,11 @@ public class Drivesubsystem extends SubsystemBase {
   private final WPI_VictorSPX rightSlave1 = new WPI_VictorSPX(3);
   private final WPI_VictorSPX rightSlave2 = new WPI_VictorSPX(4);
 
-  
+  SpeedControllerGroup leftSpeedGroup = new SpeedControllerGroup(leftMaster, leftSlave1, leftSlave2);
+  SpeedControllerGroup rightSpeedGroup = new SpeedControllerGroup(rightMaster, rightSlave1, rightSlave2);
 
   
-  private final DifferentialDrive m_Drive = new DifferentialDrive(leftMaster, rightMaster);
+  private final DifferentialDrive m_Drive = new DifferentialDrive(leftSpeedGroup, rightSpeedGroup);
 
   //solenoid
   private final DoubleSolenoid gearshift = new DoubleSolenoid(0, 1);
@@ -65,12 +66,7 @@ public class Drivesubsystem extends SubsystemBase {
    * Creates a new Drivesubsystem.
    */
   public Drivesubsystem() {
-    leftSlave1.follow((IMotorController) leftMaster);
-    leftSlave2.follow((IMotorController) leftMaster);
-
-    rightSlave1.follow((IMotorController) rightMaster);
-    rightSlave2.follow((IMotorController) rightMaster);
-
+ 
     m_LeftEncoder.setPosition(0);
     m_RightEncoder.setPosition(0);
 
