@@ -48,8 +48,9 @@ public class Drivesubsystem extends SubsystemBase {
   private final DoubleSolenoid gearshift = new DoubleSolenoid(0, 1);
 
   //encoders
-  private final CANEncoder m_LeftEncoder = leftMaster.getEncoder(EncoderType.kQuadrature, 4096);
-  private final CANEncoder m_RightEncoder = rightMaster.getEncoder(EncoderType.kQuadrature, 4096);
+  private final CANEncoder m_LeftEncoder = leftMaster.getEncoder();
+  private final CANEncoder m_RightEncoder = rightMaster.getEncoder();
+
   
 
   private final ADIS16470_IMU imu = new ADIS16470_IMU();
