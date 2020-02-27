@@ -30,9 +30,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
-   Joystick joystick = new Joystick(1);
-   XboxController xboxController = new XboxController(0);
-   JoystickButton joystickButton = new JoystickButton(joystick, 1);
+
   /**
    * We have to make commands for when the buttons are pressed, we could have a button to have the limelight
    * position the robot and shoot the ball possibly?

@@ -10,8 +10,10 @@ package frc.robot.subsystems;
 import com.analog.adis16470.frc.ADIS16470_IMU;
 import com.ctre.phoenix.motorcontrol.IMotorController;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.revrobotics.AlternateEncoderType;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.EncoderType;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SpeedController;
@@ -28,7 +30,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Drivesubsystem extends SubsystemBase {
   
-  public static Object m_robotDrive;
+  
   private final CANSparkMax leftMaster = new CANSparkMax(1, CANSparkMax.MotorType.kBrushless);
   private final WPI_VictorSPX leftSlave1 = new WPI_VictorSPX(1);
   private final WPI_VictorSPX leftSlave2 = new WPI_VictorSPX(2);
@@ -46,8 +48,9 @@ public class Drivesubsystem extends SubsystemBase {
   private final DoubleSolenoid gearshift = new DoubleSolenoid(0, 1);
 
   //encoders
-  private final CANEncoder m_LeftEncoder = new CANEncoder(leftMaster);
-  private final CANEncoder m_RightEncoder = new CANEncoder(rightMaster);
+  private final CANEncoder m_LeftEncoder = leftMaster.getEncoder(EncoderType.kQuadrature, 4096);
+  private final CANEncoder m_RightEncoder = rightMaster.getEncoder(EncoderType.kQuadrature, 4096);
+  
 
   private final ADIS16470_IMU imu = new ADIS16470_IMU();
 

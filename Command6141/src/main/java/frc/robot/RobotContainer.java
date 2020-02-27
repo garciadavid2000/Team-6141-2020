@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
@@ -27,8 +28,10 @@ import frc.robot.subsystems.Drivesubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -39,16 +42,21 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class RobotContainer {
 
+
   private Drivesubsystem drive = new Drivesubsystem();
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-
-  private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
-
+  
+  Joystick joystick = new Joystick(1);
+  XboxController xboxController = new XboxController(0);
+  JoystickButton triggerButton = new JoystickButton(joystick, 1);
+  JoystickButton thumbButton = new JoystickButton(joystick, 2);
+  JoystickButton topLeft = new JoystickButton(joystick, 3);
+  JoystickButton topRight = new JoystickButton(joystick, 4);
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -79,11 +87,15 @@ public class RobotContainer {
 
 
        
-      Trajectory autoTrajectory = autoTrajectoryGenerator();
-     
+      
+      
+      
         
-     
-    RamseteCommand ramsesteCommand = new RamseteCommand(autoTrajectory, drive::getPose,
+     String trenchTrajectoryJSON = "path.ThroughTrench.wpilib.json";
+     try{ 
+       Path trenchPath = Filesystem.getDeployDirectory().toPath().resolve(trenchTrajectoryJSON);
+      Trajectory trenchTrajectory = TrajectoryUtil.fromPathweaverJson(trenchPath);
+    RamseteCommand ramseteCommand = new RamseteCommand(trenchTrajectory, drive::getPose,
       new RamseteController(Constants.kRamseteB, Constants.kRamseteZeta),
       new SimpleMotorFeedforward(Constants.ksVolts, Constants.kvVoltsSecondsPerMeter),
       Constants.kDriveKinematics,
@@ -92,20 +104,82 @@ public class RobotContainer {
       new PIDController(Constants.kP_drive, 0, 0),  
       drive::tankDriveVolts,
       drive);
-  return ramsesteCommand.andThen(() -> drive.tankDriveVolts(0, 0));
+  return ramseteCommand.andThen(() ->  drive.tankDriveVolts(0, 0));
+     } catch (IOException ex){
+       DriverStation.reportError("Unable to open: " + trenchTrajectoryJSON, ex.getStackTrace());
+     }
+
+     
+     String trajectoryJSON2 = "path/ToShoot.wpilib.json";
+    try{ 
+      Path trajectoryPath2 = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON2);
+      Trajectory trajectory2 = TrajectoryUtil.fromPathweaverJson(trajectoryPath2);
+    RamseteCommand ramseteCommand_2 = new RamseteCommand(trajectory2, drive::getPose,
+  new RamseteController(Constants.kRamseteB, Constants.kRamseteZeta),
+  new SimpleMotorFeedforward(Constants.ksVolts, Constants.kvVoltsSecondsPerMeter),
+  Constants.kDriveKinematics,
+  drive::getWheelSpeeds,
+  new PIDController(Constants.kP_drive, 0, 0),
+  new PIDController(Constants.kP_drive, 0, 0),  
+  drive::tankDriveVolts,
+  drive);
+    return ramseteCommand_2.andThen(() -> drive.tankDriveVolts(0, 0));
+  } catch (IOException ex){
+    DriverStation.reportError("Unable to open: " + trajectoryJSON2, ex.getStackTrace());
+
+  }
+    return null;
+  
+  
+   
+  
   }
 
-  private Trajectory autoTrajectoryGenerator() {
-    String trajectoryJSON = "Path/AutoPath.wpilib.json";
-    try{ 
-      Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
-        Trajectory trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-        return trajectory;
-       } catch (IOException ex){
-         DriverStation.reportError("Umable to open", ex.getStackTrace());
-         return null;
+  // private Trajectory getTrenchTrajectory() {
+  //   String trajectoryJSON = "Path/ThroughTrench.wpilib.json";
+  //   try{ 
+  //     Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+  //       Trajectory trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+  //       return trajectory;
+  //      } catch (IOException ex){
+  //        DriverStation.reportError("Unable to open: " + trajectoryJSON, ex.getStackTrace());
+  //        return null;
  
-       }
+     
+
+      
        
-  }
+      //  private Trajectory getToShooterTrajectory(){
+      //   String trajectoryJSON2 = "Path.ToShoot.wpilib.json";
+      //   try {
+      //     Path trajectoryPath2 = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON2);
+      //     Trajectory trajectory2 = TrajectoryUtil.fromPathweaverJson(trajectoryPath2);
+      //     return trajectory2;
+      //   } catch (IOException ex){
+      //     DriverStation.reportError("Unable to open: " + trajectoryJSON2, ex.getStackTrace());
+      //   } return null;
+       
+  
+//   public SequentialCommandGroup returnRamseteCommand2() {
+//     String trajectoryJSON2 = "path/ToShoot.wpilib.json";
+//     try{ 
+//       Path trajectoryPath2 = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON2);
+//       Trajectory trajectory2 = TrajectoryUtil.fromPathweaverJson(trajectoryPath2);
+//     RamseteCommand ramseteCommand_2 = new RamseteCommand(trajectory2, drive::getPose,
+//   new RamseteController(Constants.kRamseteB, Constants.kRamseteZeta),
+//   new SimpleMotorFeedforward(Constants.ksVolts, Constants.kvVoltsSecondsPerMeter),
+//   Constants.kDriveKinematics,
+//   drive::getWheelSpeeds,
+//   new PIDController(Constants.kP_drive, 0, 0),
+//   new PIDController(Constants.kP_drive, 0, 0),  
+//   drive::tankDriveVolts,
+//   drive);
+//     return ramseteCommand_2.andThen(() -> drive.tankDriveVolts(0, 0));
+//   } catch (IOException ex){
+//     DriverStation.reportError("Unable to open: " + trajectoryJSON2, ex.getStackTrace());
+
+//   }
+  
+// }
 }
+  
